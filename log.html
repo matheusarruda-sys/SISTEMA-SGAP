@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAP - Auditoria de Acesso e Operações</title>
+    <link rel="stylesheet" href="/CSS/log.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="/JS/config.js" defer></script>
+    <script src="/JS/log.js" defer></script>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Overlay Mobile -->
+        <div class="mobile-backdrop"></div>
+        <!-- Menu Lateral (Sidebar) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-container">
+                    <div class="brand-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2 class="brand-title">SGAP</h2>
+                        <p class="brand-subtitle">GovSystem v2.8</p>
+                    </div>
+                </div>
+                <button class="close-mobile-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="user-info-card">
+                 <p class="user-label">Usuário Conectado</p>
+                 <p class="user-name" id="nomeUsuarioLogado">Carregando...</p>
+                 <p class="user-status">
+                    <span class="status-pulse-dot"></span>
+                     Online | Nível <span id="nivelUsuarioLogado">-</span>
+                 </p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="Inicial.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i> Painel de Controle
+                </a>
+                
+                <div class="nav-section-header">
+                    <p>Gestão de Bens</p>
+                </div>
+                <a href="produtos.html" class="nav-item">
+                    <i data-lucide="package"></i> Produtos Apreendidos
+                </a>
+                <a href="destinacao.html" class="nav-item">
+                    <i data-lucide="arrow-right-left"></i> Destinações Ativas
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Cadastros Base</p>
+                </div>
+                <a href="associacao.html" class="nav-item">
+                    <i data-lucide="building-2"></i> Associações / Órgãos
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Administração</p>
+                </div>
+                <a href="controle.html" class="nav-item">
+                    <i data-lucide="users"></i> Controle de Usuários
+                </a>
+                <a href="classificacao.html" class="nav-item">
+                    <i data-lucide="tags"></i> Classificações
+                </a>
+                <a href="log.html" class="nav-item active">
+                    <i data-lucide="clipboard-list"></i> Auditoria / Logs
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout">
+                   <i data-lucide="log-out"></i> Encerrar Sessão
+                </button>
+            </div>
+        </aside>
+
+
+        <!-- Área Principal de Conteúdo -->
+        <div class="main-wrapper">
+            <!-- Barra Superior (Topbar) -->
+            <header class="topbar">
+                <div class="topbar-container">
+                    <div class="topbar-left">
+                        <button class="open-mobile-btn">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <h1 class="page-title">Auditoria de Acesso e Operações</h1>
+                    </div>
+                    <div class="topbar-right">
+                        <span class="access-badge">Acesso Logado</span>
+                        <div class="user-avatar">
+                            C
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Conteúdo Principal -->
+            <main class="main-content">
+                <div class="audit-card">
+                    <!-- Cabeçalho do Card de Auditoria -->
+                    <div class="audit-card-header">
+                        <div>
+                            <h3 class="audit-card-title">Registro de Atividades</h3>
+                            <p class="audit-card-subtitle">Listagem unificada de ações de usuários auditadas de forma automática.</p>
+                        </div>
+                        <div class="audit-actions">
+                            <div class="search-box">
+                                <i data-lucide="search" class="search-icon"></i>
+                                <input type="text" id="search-auditoria" placeholder="Buscar no registro..." class="search-input">
+                            </div>
+                            <button class="btn-export">
+                                <i data-lucide="file-down"></i> Exportar Logs PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Logs -->
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Data/Hora</th>
+                                    <th scope="col">Usuário</th>
+                                    <th scope="col">Módulo</th>
+                                    <th scope="col">Ação / Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="log-timestamp">09/11/2026 10:45:12</td>
+                                    <td class="log-user">Carlos Eduardo</td>
+                                    <td>
+                                        <span class="module-badge">PRODUTOS</span>
+                                    </td>
+                                    <td class="log-action">Registrou novo produto apreendido: #1042 - Lote de Notebooks Dell Vostro.</td>
+                                </tr>
+                                <tr>
+                                    <td class="log-timestamp">09/11/2026 09:30:20</td>
+                                    <td class="log-user">Maria Oliveira</td>
+                                    <td>
+                                        <span class="module-badge">DESTINAÇÕES</span>
+                                    </td>
+                                    <td class="log-action">Confirmou o recebimento do item #1015 (Gerador Elétrico Diesel 15kVA).</td>
+                                </tr>
+                                <tr>
+                                    <td class="log-timestamp">08/11/2026 16:15:05</td>
+                                    <td class="log-user">Carlos Eduardo</td>
+                                    <td>
+                                        <span class="module-badge">USUÁRIOS</span>
+                                    </td>
+                                    <td class="log-action">Bloqueou temporariamente a conta de acesso do usuário ID #3 (João Silva).</td>
+                                </tr>
+                                <tr>
+                                    <td class="log-timestamp">08/11/2026 14:02:44</td>
+                                    <td class="log-user">João Silva</td>
+                                    <td>
+                                        <span class="module-badge">SISTEMA</span>
+                                    </td>
+                                    <td class="log-action">Autenticação efetuada com sucesso através de validação 2FA.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

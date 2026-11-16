@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAP - Controle de Usuários</title>
+    <link rel="stylesheet" href="/CSS/controle.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/JS/config.js" defer></script>
+    <script src="/JS/controle.js" defer></script>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Overlay Mobile -->
+        <div class="mobile-backdrop"></div>
+        
+      <!-- Menu Lateral (Sidebar) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-container">
+                    <div class="brand-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2 class="brand-title">SGAP</h2>
+                        <p class="brand-subtitle">GovSystem v2.8</p>
+                    </div>
+                </div>
+                <button class="close-mobile-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="user-info-card">
+                 <p class="user-label">Usuário Conectado</p>
+                 <p class="user-name" id="nomeUsuarioLogado">Carregando...</p>
+                 <p class="user-status">
+                    <span class="status-pulse-dot"></span>
+                     Online | Nível <span id="nivelUsuarioLogado">-</span>
+                 </p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="Inicial.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i> Painel de Controle
+                </a>
+                
+                <div class="nav-section-header">
+                    <p>Gestão de Bens</p>
+                </div>
+                <a href="produtos.html" class="nav-item">
+                    <i data-lucide="package"></i> Produtos Apreendidos
+                </a>
+                <a href="destinacao.html" class="nav-item">
+                    <i data-lucide="arrow-right-left"></i> Destinações Ativas
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Cadastros Base</p>
+                </div>
+                <a href="associacao.html" class="nav-item">
+                    <i data-lucide="building-2"></i> Associações / Órgãos
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Administração</p>
+                </div>
+                <a href="controle.html" class="nav-item active">
+                    <i data-lucide="users"></i> Controle de Usuários
+                </a>
+                <a href="classificacao.html" class="nav-item">
+                    <i data-lucide="tags"></i> Classificações
+                </a>
+                <a href="log.html" class="nav-item">
+                    <i data-lucide="clipboard-list"></i> Auditoria / Logs
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout">
+                   <i data-lucide="log-out"></i> Encerrar Sessão
+                </button>
+            </div>
+        </aside>
+
+        <!-- Área Principal de Conteúdo -->
+        <div class="main-wrapper">
+            <!-- Barra Superior (Topbar) -->
+            <header class="topbar">
+                <div class="topbar-container">
+                    <div class="topbar-left">
+                        <button class="open-mobile-btn">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <h1 class="page-title">Controle de Usuários</h1>
+                    </div>
+                    <div class="topbar-right">
+                        <span class="access-badge">Acesso Logado</span>
+                        <div class="user-avatar">
+                            C
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Conteúdo Principal -->
+            <main class="main-content">
+                <!-- Cabeçalho da Seção e Ações -->
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Gerenciamento de Contas</h2>
+                        <p class="section-description">Cadastre, edite, bloqueie e gerencie contas do sistema.</p>
+                    </div>
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="search-usuarios" placeholder="Buscar usuário..." class="search-input">
+                        </div>
+                        <button class="btn-primary">
+                            <i data-lucide="user-plus"></i> Novo Usuário
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabela de Usuários -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Associação</th>
+                                    <th>Nível</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Linha: Sua Conta -->
+                                <tr>
+                                    <td>
+                                        <div class="user-fullname">Carlos Eduardo</div>
+                                        <div class="user-doc">111.111.111-11</div>
+                                    </td>
+                                    <td>
+                                        <div class="user-assoc">Prefeitura Municipal</div>
+                                        <div class="user-location">São Paulo - SP</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-level level-admin">Administrador (Nível 1)</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status status-active">Ativo</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span class="own-account-label">Sua Conta</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Linha: Usuário Ativo -->
+                                <tr>
+                                    <td>
+                                        <div class="user-fullname">Maria Oliveira</div>
+                                        <div class="user-doc">222.222.222-22</div>
+                                    </td>
+                                    <td>
+                                        <div class="user-assoc">Associação Beneficente Vida</div>
+                                        <div class="user-location">Campinas - SP</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-level level-manager">Gerente (Nível 2)</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status status-active">Ativo</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="table-actions">
+                                            <button class="btn-icon" title="Editar"><i data-lucide="edit-2"></i></button>
+                                            <button class="btn-icon-danger" title="Excluir"><i data-lucide="trash-2"></i></button>
+                                            <button class="btn-icon" title="Bloquear"><i data-lucide="lock"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Linha: Usuário Bloqueado -->
+                                <tr>
+                                    <td>
+                                        <div class="user-fullname">João Silva</div>
+                                        <div class="user-doc">333.333.333-33</div>
+                                    </td>
+                                    <td>
+                                        <div class="user-assoc">Órgão de Fiscalização Regional</div>
+                                        <div class="user-location">Santos - SP</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-level level-manager">Gerente (Nível 2)</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status status-blocked">Bloqueado</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="table-actions">
+                                            <button class="btn-icon" title="Editar"><i data-lucide="edit-2"></i></button>
+                                            <button class="btn-icon btn-icon-danger" title="Excluir"><i data-lucide="trash-2"></i></button>
+                                            <button class="btn-icon" title="Desbloquear"><i data-lucide="unlock"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Modal Usuário -->
+            <div id="modalUser" class="modal-backdrop hidden">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <h3 id="modalUserTitle" class="modal-title">Cadastrar Novo Usuário</h3>
+                        <button class="close-modal-btn"><i data-lucide="x"></i></button>
+                    </div>
+
+                    <!-- ETAPA 1: Seleção da Instituição -->
+                    <div id="user-step-1" class="modal-body space-y">
+                        <div class="info-alert">
+                            <p class="info-alert-title">
+                                <i data-lucide="info"></i> Registro de Contas
+                            </p>
+                            Para cadastrar um novo usuário, é obrigatório selecionar a instituição/associação a qual ele pertence primeiro.
+                        </div>
+                        <div class="form-group">
+                            <label for="nu-assoc-select" class="form-label">Selecione a Instituição / Associação:</label>
+                            <select id="nu-assoc-select" class="form-select">
+                                <option value="">-- Selecione uma instituição --</option>
+                                <option value="Prefeitura Municipal">Prefeitura Municipal</option>
+                                <option value="Associação Beneficente Vida">Associação Beneficente Vida</option>
+                                <option value="Órgão de Fiscalização Regional">Órgão de Fiscalização Regional</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary">Cancelar</button>
+                            <button type="button" class="btn-primary">
+                                Continuar <i data-lucide="arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA 2: Form de Dados -->
+                    <form id="formUser" class="modal-body space-y hidden">
+                        <input type="hidden" id="nu-assoc">
+                        <div class="form-grid">
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Instituição Vinculada</label>
+                                <input type="text" id="nu-assoc-display" disabled class="form-input disabled" value="Prefeitura Municipal">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nome Completo</label>
+                                <input type="text" id="nu-nome" required class="form-input" placeholder="Ex: Roberto Alves">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Documento (CPF)</label>
+                                <input type="text" id="nu-rg" required maxlength="14" class="form-input" placeholder="Ex: 111.111.111-11">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Senha do Usuário</label>
+                                <input type="password" id="nu-senha" required class="form-input" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nível de Acesso</label>
+                                <select id="nu-nivel" class="form-select">
+                                    <option value="1">1 - Administrador (Controle Total)</option>
+                                    <option value="2">2 - Gerente (Operação Base)</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Local de Residência/Base</label>
+                                <input type="text" id="nu-local" required class="form-input" placeholder="Ex: São Paulo - SP">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary order-2 sm-order-1">Cancelar</button>
+                            <button type="submit" class="btn-primary order-1 sm-order-2">Salvar Usuário</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAP - Classificações de Produtos</title>
+    <link rel="stylesheet" href="/CSS/classificacao.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/JS/config.js" defer></script>
+    <script src="/JS/classificacao.js" defer></script>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Backdrop Mobile -->
+        <div class="mobile-backdrop"></div>
+        
+       <!-- Menu Lateral (Sidebar) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-container">
+                    <div class="brand-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2 class="brand-title">SGAP</h2>
+                        <p class="brand-subtitle">GovSystem v2.8</p>
+                    </div>
+                </div>
+                <button class="close-mobile-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="user-info-card">
+                 <p class="user-label">Usuário Conectado</p>
+                 <p class="user-name" id="nomeUsuarioLogado">Carregando...</p>
+                 <p class="user-status">
+                    <span class="status-pulse-dot"></span>
+                     Online | Nível <span id="nivelUsuarioLogado">-</span>
+                 </p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="Inicial.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i> Painel de Controle
+                </a>
+                
+                <div class="nav-section-header">
+                    <p>Gestão de Bens</p>
+                </div>
+                <a href="produtos.html" class="nav-item">
+                    <i data-lucide="package"></i> Produtos Apreendidos
+                </a>
+                <a href="destinacao.html" class="nav-item">
+                    <i data-lucide="arrow-right-left"></i> Destinações Ativas
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Cadastros Base</p>
+                </div>
+                <a href="associacao.html" class="nav-item">
+                    <i data-lucide="building-2"></i> Associações / Órgãos
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Administração</p>
+                </div>
+                <a href="controle.html" class="nav-item">
+                    <i data-lucide="users"></i> Controle de Usuários
+                </a>
+                <a href="classificacao.html" class="nav-item active">
+                    <i data-lucide="tags"></i> Classificações
+                </a>
+                <a href="log.html" class="nav-item">
+                    <i data-lucide="clipboard-list"></i> Auditoria / Logs
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout">
+                   <i data-lucide="log-out"></i> Encerrar Sessão
+                </button>
+            </div>
+        </aside>
+
+        <!-- Área Principal de Conteúdo -->
+        <div class="main-wrapper">
+            <!-- Barra Superior (Topbar) -->
+            <header class="topbar">
+                <div class="topbar-container">
+                    <div class="topbar-left">
+                        <button class="open-mobile-btn">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <h1 class="page-title">Classificações de Produtos</h1>
+                    </div>
+                    <div class="topbar-right">
+                        <span class="access-badge">Acesso Logado</span>
+                        <div class="user-avatar">
+                            C
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- Conteúdo Principal -->
+            <main class="main-content">
+                <!-- Cabeçalho da Seção -->
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Gerenciamento de Categorias</h2>
+                        <p class="section-description">Defina as classificações disponíveis para cadastro de produtos.</p>
+                    </div>
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="search-classificacoes" placeholder="Buscar categoria..." class="search-input">
+                        </div>
+                        <button type="button" id="btnNovaCategoria" class="btn-primary">
+                            <i data-lucide="plus-circle"></i> Nova Categoria
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabela de Categorias -->
+                <div class="table-card table-card-constrained">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Nome da Categoria</th>
+                                    <th scope="col" class="text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaCategoriasBody">
+                               <tr>
+                                 <td colspan="3">Carregando categorias...</td>
+                               </tr>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Modal Categoria -->
+            <div id="modalClassificacao" class="modal-backdrop hidden">
+                <div class="modal-card modal-card-small">
+                    <div class="modal-header">
+                        <h3 id="modalClassTitle" class="modal-title">Nova Categoria</h3>
+                        <button class="close-modal-btn"><i data-lucide="x"></i></button>
+                    </div>
+                    <form id="formClassificacao" class="modal-body space-y">
+                        <div class="form-group">
+                            <label class="form-label">Nome da Categoria</label>
+                            <input type="text" id="nc-nome" maxlength="100" required class="form-input" placeholder="Ex: Vestuário">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="btnCancelarModal" class="btn-secondary order-2 sm-order-1">Cancelar</button>
+                            <button type="submit" id="btnSalvarCategoria" class="btn-primary order-1 sm-order-2">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

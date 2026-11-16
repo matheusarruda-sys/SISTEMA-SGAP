@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAP - Associações e Órgãos</title>
+    <link rel="stylesheet" href="/CSS/associacao.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/JS/config.js" defer></script>
+    <script src="/JS/associacao.js" defer></script>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Backdrop Mobile -->
+        <div class="mobile-backdrop"></div>
+        
+        <!-- Menu Lateral (Sidebar) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-container">
+                    <div class="brand-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2 class="brand-title">SGAP</h2>
+                        <p class="brand-subtitle">GovSystem v2.8</p>
+                    </div>
+                </div>
+                <button class="close-mobile-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="user-info-card">
+                 <p class="user-label">Usuário Conectado</p>
+                 <p class="user-name" id="nomeUsuarioLogado">Carregando...</p>
+                 <p class="user-status">
+                    <span class="status-pulse-dot"></span>
+                     Online | Nível <span id="nivelUsuarioLogado">-</span>
+                 </p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="Inicial.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i> Painel de Controle
+                </a>
+                
+                <div class="nav-section-header">
+                    <p>Gestão de Bens</p>
+                </div>
+                <a href="produtos.html" class="nav-item">
+                    <i data-lucide="package"></i> Produtos Apreendidos
+                </a>
+                <a href="destinacao.html" class="nav-item">
+                    <i data-lucide="arrow-right-left"></i> Destinações Ativas
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Cadastros Base</p>
+                </div>
+                <a href="associacao.html" class="nav-item active">
+                    <i data-lucide="building-2"></i> Associações / Órgãos
+                </a>
+
+                 <div id="secao-admin" style="display: none;">
+                <div class="nav-section-header">
+                    <p>Administração</p>
+                </div>
+                <a href="controle.html" class="nav-item">
+                    <i data-lucide="users"></i> Controle de Usuários
+                </a>
+                <a href="classificacao.html" class="nav-item">
+                    <i data-lucide="tags"></i> Classificações
+                </a>
+                <a href="log.html" class="nav-item">
+                    <i data-lucide="clipboard-list"></i> Auditoria / Logs
+                </a>
+            </div>    
+            </nav>
+          
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout">
+                   <i data-lucide="log-out"></i> Encerrar Sessão
+                </button>
+            </div>
+        </aside>
+
+       <!-- Área Principal de Conteúdo -->
+        <div class="main-wrapper">
+            <!-- Barra Superior (Topbar) -->
+            <header class="topbar">
+                <div class="topbar-container">
+                    <div class="topbar-left">
+                        <button class="open-mobile-btn">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <h1 class="page-title">Associações / Órgãos</h1>
+                    </div>
+                    <div class="topbar-right">
+                        <span class="access-badge">Acesso Logado</span>
+                        <div class="user-avatar">
+                            C
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Conteúdo Principal -->
+            <main class="main-content">
+                <!-- Cabeçalho da Seção -->
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Diretório de Instituições</h2>
+                        <p class="section-description">Órgãos governamentais e associações privadas parceiras credenciadas no SGAP.</p>
+                    </div>
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="search-associacoes" placeholder="Buscar instituição..." class="search-input">
+                        </div>
+                        <button class="btn-primary">
+                            <i data-lucide="building-2"></i> Cadastrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabela de Instituições -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome da Instituição</th>
+                                    <th>Líder / Responsável</th>
+                                    <th>Ramo de Atuação</th>
+                                    <th>Localidade</th>
+                                    <th>Origem</th>
+                                    <th class="text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Item Nativo/Protegido -->
+                                <tr>
+                                    <td>
+                                        <div class="inst-info-cell">
+                                            <div class="inst-icon-box">
+                                                <i data-lucide="building"></i>
+                                            </div>
+                                            <div>
+                                                <div class="inst-name">Prefeitura Municipal</div>
+                                                <div class="inst-profit-type">Sem Fins Lucrativos</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="inst-leader">Carlos Eduardo</td>
+                                    <td class="inst-ramo">Gestão Pública</td>
+                                    <td>
+                                        <div class="inst-location">São Paulo - SP</div>
+                                        <div class="inst-foundation">Fundação: São Paulo</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-origin origin-native">Nativo</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <span class="protected-label">Protegido</span>
+                                    </td>
+                                </tr>
+
+                                <!-- Item Manual 1 -->
+                                <tr>
+                                    <td>
+                                        <div class="inst-info-cell">
+                                            <div class="inst-icon-box">
+                                                <i data-lucide="building"></i>
+                                            </div>
+                                            <div>
+                                                <div class="inst-name">Associação Beneficente Vida</div>
+                                                <div class="inst-profit-type">Sem Fins Lucrativos</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="inst-leader">Maria Oliveira</td>
+                                    <td class="inst-ramo">Assistência Social</td>
+                                    <td>
+                                        <div class="inst-location">Campinas - SP</div>
+                                        <div class="inst-foundation">Fundação: Campinas</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-origin origin-manual">Manual</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="table-actions">
+                                            <button class="btn-icon" title="Editar"><i data-lucide="edit-2"></i></button>
+                                            <button class="btn-icon-danger" title="Excluir"><i data-lucide="trash-2"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Item Manual 2 (Fins Lucrativos) -->
+                                <tr>
+                                    <td>
+                                        <div class="inst-info-cell">
+                                            <div class="inst-icon-box">
+                                                <i data-lucide="building"></i>
+                                            </div>
+                                            <div>
+                                                <div class="inst-name">Empresa Reciclagem Verde LTDA</div>
+                                                <div class="inst-profit-type">Fins Lucrativos</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="inst-leader">João Silva</td>
+                                    <td class="inst-ramo">Gestão Ambiental</td>
+                                    <td>
+                                        <div class="inst-location">Santos - SP</div>
+                                        <div class="inst-foundation">Fundação: Santos</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-origin origin-manual">Manual</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="table-actions">
+                                            <button class="btn-icon" title="Editar"><i data-lucide="edit-2"></i></button>
+                                            <button class="btn-icon btn-icon-danger" title="Excluir"><i data-lucide="trash-2"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Modal Cadastro/Edição de Associação -->
+            <div id="modalAssociacao" class="modal-backdrop hidden">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <h3 id="modalAssociacaoTitle" class="modal-title">Cadastrar Associação/Órgão</h3>
+                        <button class="close-modal-btn"><i data-lucide="x"></i></button>
+                    </div>
+                    <form id="formAssociacao" class="modal-body space-y">
+                        <div class="form-grid">
+                            <div class="form-group col-span-2">
+                                <label class="form-label">Nome da Instituição</label>
+                                <input type="text" id="na-nome" required class="form-input" placeholder="Ex: Instituto Ação Social">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ramo de Atuação</label>
+                                <input type="text" id="na-ramo" required class="form-input" placeholder="Ex: Educação Infantil">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Líder / Responsável</label>
+                                <input type="text" id="na-lider" required class="form-input" placeholder="Ex: Ana Souza">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Localidade de Operação</label>
+                                <input type="text" id="na-local-op" required class="form-input" placeholder="Ex: Sorocaba - SP">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Local de Fundação</label>
+                                <input type="text" id="na-local-fund" required class="form-input" placeholder="Ex: Sorocaba">
+                            </div>
+                            <div class="form-group col-span-2 checkbox-group">
+                                <input type="checkbox" id="na-lucrativo" class="form-checkbox">
+                                <label for="na-lucrativo" class="checkbox-label">Possui fins lucrativos</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary order-2 sm-order-1">Cancelar</button>
+                            <button type="submit" class="btn-primary order-1 sm-order-2">Salvar Registro</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGAP - Produtos Apreendidos</title>
+    <link rel="stylesheet" href="/CSS/produtos.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="/JS/config.js" defer></script>
+    <script src="/JS/produtos.js" defer></script>
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Overlay Mobile -->
+        <div class="mobile-backdrop"></div>
+        
+        <!-- Menu Lateral (Sidebar) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-container">
+                    <div class="brand-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h2 class="brand-title">SGAP</h2>
+                        <p class="brand-subtitle">GovSystem v2.8</p>
+                    </div>
+                </div>
+                <button class="close-mobile-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="user-info-card">
+                 <p class="user-label">Usuário Conectado</p>
+                 <p class="user-name" id="nomeUsuarioLogado">Carregando...</p>
+                 <p class="user-status">
+                    <span class="status-pulse-dot"></span>
+                     Online | Nível <span id="nivelUsuarioLogado">-</span>
+                 </p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="Inicial.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i> Painel de Controle
+                </a>
+                
+                <div class="nav-section-header">
+                    <p>Gestão de Bens</p>
+                </div>
+                <a href="produtos.html" class="nav-item active">
+                    <i data-lucide="package"></i> Produtos Apreendidos
+                </a>
+                <a href="destinacao.html" class="nav-item">
+                    <i data-lucide="arrow-right-left"></i> Destinações Ativas
+                </a>
+
+                <div class="nav-section-header">
+                    <p>Cadastros Base</p>
+                </div>
+                <a href="associacao.html" class="nav-item">
+                    <i data-lucide="building-2"></i> Associações / Órgãos
+                </a>
+
+            <div id="secao-admin" style="display: none;">
+                <div class="nav-section-header">
+                    <p>Administração</p>
+                </div>
+                <a href="controle.html" class="nav-item">
+                    <i data-lucide="users"></i> Controle de Usuários
+                </a>
+                <a href="classificacao.html" class="nav-item">
+                    <i data-lucide="tags"></i> Classificações
+                </a>
+                <a href="log.html" class="nav-item">
+                    <i data-lucide="clipboard-list"></i> Auditoria / Logs
+                </a>
+            </div>    
+            </nav>
+          
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout">
+                   <i data-lucide="log-out"></i> Encerrar Sessão
+                </button>
+            </div>
+        </aside>
+
+        <!-- Área Principal de Conteúdo -->
+        <div class="main-wrapper">
+            <!-- Barra Superior (Topbar) -->
+            <header class="topbar">
+                <div class="topbar-container">
+                    <div class="topbar-left">
+                        <button class="open-mobile-btn">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <h1 class="page-title">Produtos Apreendidos</h1>
+                    </div>
+                    <div class="topbar-right">
+                        <span class="access-badge">Acesso Logado</span>
+                        <div class="user-avatar">
+                            C
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Conteúdo Principal -->
+            <main class="main-content">
+                <!-- Cabeçalho da Seção e Controles -->
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Catálogo Geral de Bens</h2>
+                        <p class="section-description">Veja, registre ou atribua destinações para mercadorias sob custódia estatal.</p>
+                    </div>
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i data-lucide="search" class="search-icon"></i>
+                            <input type="text" id="search-produtos" placeholder="Buscar produto..." class="search-input">
+                        </div>
+                        <div class="button-group">
+                            <button type="button" id="btnExportarPdf" class="btn-secondary">
+                                <i data-lucide="file-down"></i> PDF
+                            </button>
+                            <button type="button" id="btnRegistrarProduto" class="btn-primary">
+                                <i data-lucide="plus-circle"></i> Registrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grade de Cards de Produtos -->
+                <div class="products-grid" id="gridProdutos">
+                    <p>Carregando produtos apreendidos...</p>
+                </div>
+            </main>
+
+            <!-- Modal 1: Cadastro/Edição de Produto -->
+            <div id="modalProduto" class="modal-backdrop hidden">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <h3 id="modalProdutoTitle" class="modal-title">Registrar Produto Apreendido</h3>
+                        <button type="button" class="close-modal-btn"><i data-lucide="x"></i></button>
+                    </div>
+                    <form id="formProduto" class="modal-body space-y">
+                        <div class="form-grid">
+                            <div class="form-group col-span-2">
+                                <label for="np-nome" class="form-label">Nome/Descrição do Item</label>
+                                <input type="text" id="np-nome" maxlength="255" required class="form-input" placeholder="Ex: Monitor 24 Polegadas LED">
+                            </div>
+                            <div class="form-group">
+                                <label for="np-class" class="form-label">Classificação</label>
+                                <select id="np-class" required class="form-select">
+                                    <option value="">Carregando categorias...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="np-data" class="form-label">Data de Apreensão</label>
+                                <input type="date" id="np-data" required class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="np-valor" class="form-label">Valor Estimado (R$)</label>
+                                <input type="number" id="np-valor" step="0.01" min="0" required class="form-input" placeholder="Ex: 1500.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="np-local" class="form-label">Localização Atual (Depósito)</label>
+                                <input type="text" id="np-local" maxlength="255" required class="form-input" placeholder="Ex: Depósito Setor 02">
+                            </div>
+                            <div class="form-group col-span-2">
+                                <label for="np-motivo" class="form-label">Motivo de Apreensão</label>
+                                <input type="text" id="np-motivo" maxlength="255" required class="form-input" placeholder="Ex: Produto sem documentação fiscal">
+                            </div>
+                            <div class="form-group col-span-2 checkbox-group">
+                                <input type="checkbox" id="np-lote" class="form-checkbox">
+                                <label for="np-lote" class="checkbox-label">Registrar como Lote</label>
+                            </div>
+                            <div id="np-qtd-container" class="form-group col-span-2 hidden">
+                                <label for="np-qtd" class="form-label">Quantidade do Lote</label>
+                                <input type="number" id="np-qtd" min="1" class="form-input" placeholder="Ex: lote é um conjunto de unidades de um produto.">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary order-2 sm-order-1">Cancelar</button>
+                            <button type="submit" class="btn-primary order-1 sm-order-2">Salvar Registro</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal 2: Visualizar Destino -->
+            <div id="modalViewDestino" class="modal-backdrop hidden z-high">
+                <div class="modal-card modal-card-compact">
+                    <div class="modal-header-dark">
+                        <h3 class="modal-title-dark"><i data-lucide="info"></i> Histórico de Destinação</h3>
+                        <button type="button" class="close-modal-btn-dark"><i data-lucide="x"></i></button>
+                    </div>
+                    <div class="modal-body-scrollable" id="viewDestinoContent"></div>
+                    <div class="modal-footer-light">
+                        <button type="button" class="btn-secondary">Fechar Painel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal 3: Configurar Destinação -->
+            <div id="modalDestino" class="modal-backdrop hidden">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Configurar Destinação de Bem</h3>
+                        <button type="button" class="close-modal-btn"><i data-lucide="x"></i></button>
+                    </div>
+                    <form id="formDestino" class="modal-body space-y">
+                        <input type="hidden" id="nd-prodId">
+                        <div class="info-summary-box" id="nd-prodInfo"></div>
+                        <div class="form-group">
+                            <label for="nd-funcao" class="form-label">Função da Destinação (Propósito)</label>
+                            <input type="text" id="nd-funcao" maxlength="100" required class="form-input" placeholder="Ex: Doação para laboratório de informática">
+                        </div>
+                        <div class="form-group">
+                            <label for="nd-associacao" class="form-label">Associação / Órgão de Destino</label>
+                            <select id="nd-associacao" required class="form-select">
+                                <option value="">Selecione a instituição...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nd-user" class="form-label">Atribuir ao Usuário (Custodiante)</label>
+                            <select id="nd-user" required class="form-select">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary order-2 sm-order-1">Cancelar</button>
+                            <button type="submit" class="btn-primary order-1 sm-order-2">Salvar Destinação</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
